@@ -81,3 +81,26 @@ def io_demo():
         "threaded_seconds": round(threaded, 2),
         "results": results,
     }
+
+
+
+@app.get("/thread-demo")
+def thread_demo():
+    def worker(name):
+        pid = os.getpid()
+        tid = threading.get_native_id()
+
+        time.sleep(2)
+
+        return {
+            "name": name,
+            "pid": pid,
+            "thread_id": tid,
+        }
+
+    with ThreadPoolExecutor(max_workers=3) as pool:
+        results = list(
+            pool.map(worker, ["A", "B", "C"])
+        )
+
+    return {"results": results}
